@@ -8,9 +8,10 @@ import (
 // Pipeline
 type Pipeline struct {
 	sync.Mutex
-	chatId       int64
-	rule         *Rule
-	exec map[int64]*Rule
+	chatId int64
+	data   []string
+	rule   *Rule
+	exec   map[int64]*Rule
 }
 
 // newPipeline
@@ -30,7 +31,7 @@ func (p *Pipeline) set() {
 	}
 
 	timeout := *p.rule.timeout
-	if timeout == 0{
+	if timeout == 0 {
 		timeout = time.Second * 180
 	}
 
@@ -60,6 +61,16 @@ func (p *Pipeline) del() {
 	delete(p.exec, p.chatId)
 }
 
+// Data get saving data
+func (p *Pipeline) Data() []string {
+	return p.data
+}
+
+// Save add string data in storage pipeline
+func (p *Pipeline) Save(s string) {
+	p.data = append(p.data, s)
+}
+
 // Timeout delete func on pipeline
 func (p *Pipeline) Timeout() float64 {
 	if p.rule.timeout == nil {
@@ -69,13 +80,13 @@ func (p *Pipeline) Timeout() float64 {
 }
 
 // Prev command
-func (p *Pipeline) Prev()  {
+func (p *Pipeline) Prev() {
 	p.rule = p.rule.prev
 	p.set()
 }
 
 // Next command
-func (p *Pipeline) Next()  {
+func (p *Pipeline) Next() {
 	p.rule = p.rule.next
 	p.set()
 }
@@ -87,6 +98,6 @@ func (p *Pipeline) Repeat() {
 }
 
 // Stop pipeline
-func (p *Pipeline) Stop()  {
+func (p *Pipeline) Stop() {
 	p.del()
 }
