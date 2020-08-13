@@ -57,6 +57,7 @@ func (p *Pipeline) del() {
 	defer p.Unlock()
 
 	p.rule.timer.Stop()
+	p.data = []string{}
 
 	delete(p.exec, p.chatId)
 }
