@@ -72,6 +72,11 @@ func (a *app) processor(update *tgbotapi.Update) {
 			continue
 		}
 
+		// check allow list and exist user in list
+		if !rule.allowList.Empty() && !rule.allowList.Exist(chatId) {
+			return
+		}
+
 		if ok := rule.command(&Context{
 			app:          a,
 			chatId:       chatId,

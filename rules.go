@@ -9,9 +9,9 @@ import (
 // constants to limit border use methods bot
 const (
 	// only exec bot methods
-	Private    = 1
+	Private = 1
 	// only exec group methods
-	Group   = 2
+	Group = 2
 	// only exec channel methods
 	Channel = 3
 )
@@ -19,27 +19,27 @@ const (
 // constants to limit callbacks
 const (
 	// text messages
-	Messages            = "MessageRule"
+	Messages = "MessageRule"
 	// callback to inline keyboard
-	Callbacks           = "CallbackRule"
+	Callbacks = "CallbackRule"
 	// edit messages callbacks
-	EditedMessages      = "EditedMessageRule"
+	EditedMessages = "EditedMessageRule"
 	// commands, like a /start
-	Commands            = "CommandRule"
+	Commands = "CommandRule"
 	// reply to message
-	ReplyToMessages     = "ReplyToMessageRule"
+	ReplyToMessages = "ReplyToMessageRule"
 	// channel post (only in channels)
-	ChannelPosts        = "ChannelPostRule"
+	ChannelPosts = "ChannelPostRule"
 	// edit channel post callback (only in channels)
-	EditedChannelPosts  = "EditedChannelPostRule"
+	EditedChannelPosts = "EditedChannelPostRule"
 	// inline results callback
-	InlineQuerys        = "InlineQueryRule"
+	InlineQuerys = "InlineQueryRule"
 	// chosen inline results callbacks
 	ChosenInlineResults = "ChosenInlineResultRule"
 	// pre chekcout query callbacks
-	PreCheckoutQuerys   = "PreCheckoutQueryRule"
+	PreCheckoutQuerys = "PreCheckoutQueryRule"
 	// shipping query callbacks
-	ShippingQuerys      = "ShippingQueryRule"
+	ShippingQuerys = "ShippingQueryRule"
 )
 
 // rules
@@ -58,27 +58,30 @@ func newRules() *rules {
 // Rule
 type Rule struct {
 	// application storage
-	app       *app
+	app *app
 	// previous pipeline rule
-	prev      *Rule
+	prev *Rule
 	// border user (private, group, channel)
 	borderUse int
 	// execution command
-	command   func(ctx *Context) bool
+	command func(ctx *Context) bool
 	// compile regex string
-	regexp    *regexp.Regexp
+	regexp *regexp.Regexp
 	// next pipeline rule
-	next      *Rule
+	next *Rule
 	// time to end pipeline
-	timer     *time.Timer
+	timer *time.Timer
 	// timeout pipeline
-	timeout   *time.Duration
+	timeout *time.Duration
+	// allowList for current rule
+	allowList *AllowList
 }
 
 // HandleFunc
 func (a *app) HandleFunc(regex string, handler func(c *Context) bool) *Rule {
 	return &Rule{
 		app:       a,
+		allowList: newAllowList(),
 		command:   handler,
 		regexp:    regexp.MustCompile(regex),
 		borderUse: Private,
@@ -86,7 +89,7 @@ func (a *app) HandleFunc(regex string, handler func(c *Context) bool) *Rule {
 }
 
 // Func
-func (r *Rule) Func(handler func(c *Context) bool ) *Rule {
+func (r *Rule) Func(handler func(c *Context) bool) *Rule {
 	r.command = handler
 	return r
 }
@@ -126,7 +129,12 @@ func (r *Rule) Timeout(t time.Duration) *Rule {
 	return r
 }
 
-// findMatch()
+// findMatch
 func (r *Rule) findMatch(command string) []string {
 	return r.regexp.FindStringSubmatch(command)
+}
+
+// allowList for current rule
+func (r *Rule) AllowList() *AllowList {
+	return r.allowList
 }
