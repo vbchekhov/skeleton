@@ -9,6 +9,7 @@ type app struct {
 	rules        *rules
 	pipeline     *Pipeline
 	keyboards    *Keyboards
+	allowList    *AllowList
 	updateConfig *tgbotapi.UpdateConfig
 }
 
@@ -34,6 +35,7 @@ func NewBot(token string) *app {
 		rules:        newRules(),
 		pipeline:     newPipeline(),
 		keyboards:    newKeyboards(),
+		allowList:    newAllowList(),
 		updateConfig: &updateConfig,
 	}
 }
@@ -44,6 +46,11 @@ func (a *app) Debug() {
 		return
 	}
 	a.botAPI.Debug = true
+}
+
+// AllowList current app
+func (a *app) AllowList() *AllowList {
+	return a.allowList
 }
 
 // parse message mode default

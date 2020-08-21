@@ -5,17 +5,17 @@ import "github.com/Syfaro/telegram-bot-api"
 // Context command to execution
 type Context struct {
 	// app - application storage
-	app          *app
+	app *app
 	// chatId - current user telegram id
-	chatId       int64
+	chatId int64
 	// rule - current execution rule
-	rule         *Rule
+	rule *Rule
 	// BotAPI - bot api (github.com/Syfaro/telegram-bot-api)
-	BotAPI       *tgbotapi.BotAPI
+	BotAPI *tgbotapi.BotAPI
 	// Update - update from telegram bot api
-	Update       *tgbotapi.Update
+	Update *tgbotapi.Update
 	// RegexpResult - result exec regex
- 	RegexpResult []string
+	RegexpResult []string
 }
 
 // app current application
@@ -40,4 +40,9 @@ func (c *Context) Pipeline() *Pipeline {
 	c.app.pipeline.rule = c.rule
 
 	return c.app.pipeline
+}
+
+// AllowList current app
+func (c *Context) AllowList() *AllowList {
+	return c.app.allowList
 }

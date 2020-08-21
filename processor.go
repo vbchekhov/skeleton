@@ -20,7 +20,7 @@ func (a *app) Run() {
 }
 
 // defaultFunc()
-func (a *app) defaultFunc()  {
+func (a *app) defaultFunc() {
 
 	// ++ keyboard func`s
 	a.HandleFunc(`prev`, prev).Border(Private).Methods(Callbacks)
@@ -37,13 +37,18 @@ func (a *app) processor(update *tgbotapi.Update) {
 
 	defer func() {
 		if err := recover(); err != nil {
-			log.Printf("RECOVER AFTER PANIC [%v]", err)
+			log.Printf("[ERR] RECOVER AFTER PANIC [%v]", err)
 		}
 	}()
 
 	command, context, chatId := GetCommand(update)
 
-	if rule, found := a.pipeline.get(chatId); found{
+	// check allow list and exist user in list
+	if !a.allowList.Empty() && !a.allowList.Exist(chatId) {
+		return
+	}
+
+	if rule, found := a.pipeline.get(chatId); found {
 
 		if ok := rule.command(&Context{
 			app:    a,
@@ -51,28 +56,32 @@ func (a *app) processor(update *tgbotapi.Update) {
 			chatId: chatId,
 			BotAPI: a.botAPI,
 			Update: update,
-		});
-
-		ok { return }
+		}); ok {
+			return
+		}
 	}
 
 	for _, rule := range a.rules.rulesMap[context] {
 
 		search := rule.findMatch(command)
 
-		if len(search) == 0 { continue }
-		if rule.borderUse != BorderUse(update) { continue }
+		if len(search) == 0 {
+			continue
+		}
+		if rule.borderUse != BorderUse(update) {
+			continue
+		}
 
 		if ok := rule.command(&Context{
-			app:a,
-			chatId:chatId,
-			rule:rule,
-			BotAPI: a.botAPI,
-			Update: update,
+			app:          a,
+			chatId:       chatId,
+			rule:         rule,
+			BotAPI:       a.botAPI,
+			Update:       update,
 			RegexpResult: search,
-		});
-
-		!ok { continue }
+		}); !ok {
+			continue
+		}
 
 		return
 	}
@@ -92,5 +101,3 @@ func (a *app) processor(update *tgbotapi.Update) {
 			defaultMessage))
 	}
 }
-
-
