@@ -11,16 +11,6 @@ func (a *app) Run() {
 	updates, _ := a.botAPI.GetUpdatesChan(*a.updateConfig)
 
 	// add default func`s
-	a.defaultFunc()
-
-	for update := range updates {
-		a.processor(&update)
-	}
-
-}
-
-// defaultFunc()
-func (a *app) defaultFunc() {
 
 	// ++ keyboard func`s
 	a.HandleFunc(`prev`, prev).Border(Private).Methods(Callbacks)
@@ -29,6 +19,14 @@ func (a *app) defaultFunc() {
 	a.HandleFunc(`back`, back).Border(Private).Methods(Callbacks)
 	a.HandleFunc(`show-(\d{0,})`, show).Border(Private).Methods(Callbacks)
 	// -- keyboard func`s
+
+	// ++ pipeline func`s
+	a.HandleFunc(`abort-pipeline`, abort).Border(Private).Methods(Callbacks)
+	// -- pipeline func`s
+
+	for update := range updates {
+		a.processor(&update)
+	}
 
 }
 
@@ -49,6 +47,18 @@ func (a *app) processor(update *tgbotapi.Update) {
 	}
 
 	if rule, found := a.pipeline.get(chatId); found {
+
+		if command == "abort-pipeline" && context == Callbacks {
+			abort(&Context{
+				app:    a,
+				rule:   rule,
+				chatId: chatId,
+				BotAPI: a.botAPI,
+				Update: update,
+			})
+
+			return
+		}
 
 		if ok := rule.command(&Context{
 			app:    a,

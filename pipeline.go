@@ -1,6 +1,7 @@
 package skeleton
 
 import (
+	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"sync"
 	"time"
 )
@@ -101,4 +102,20 @@ func (p *Pipeline) Repeat() {
 func (p *Pipeline) Stop() {
 	p.data = []string{}
 	p.del()
+}
+
+// abort pipeline and send answer
+func abort(c *Context) bool {
+
+	c.Pipeline().Stop()
+
+	c.BotAPI.Send(tgbotapi.NewDeleteMessage(c.ChatId(),
+		c.Update.CallbackQuery.Message.MessageID))
+
+	c.BotAPI.AnswerCallbackQuery(
+		tgbotapi.NewCallbackWithAlert(
+			c.Update.CallbackQuery.ID,
+			"Ok 👍"))
+
+	return true
 }

@@ -52,13 +52,13 @@ func (k *Keyboards) ReadState(m *tgbotapi.Message, kb Keyboarder) {
 }
 
 // SaveState
-func (k *Keyboards) SaveState(m *tgbotapi.Message, kb Keyboarder)  {
+func (k *Keyboards) SaveState(m *tgbotapi.Message, kb Keyboarder) {
 	kb.Save(m, k)
 }
 
 // newKeyboards()
 func newKeyboards() *Keyboards {
-	return &Keyboards{ state: map[int]interface{}{}}
+	return &Keyboards{state: map[int]interface{}{}}
 }
 
 // KeyboardResult
@@ -76,7 +76,6 @@ func (kr *KeyboardResult) ReplyKeyboardMarkup() *tgbotapi.ReplyKeyboardMarkup {
 func (kr *KeyboardResult) InlineKeyboardMarkup() *tgbotapi.InlineKeyboardMarkup {
 	return kr.inlineKeyboard
 }
-
 
 // -- Reply keyboard markup
 
@@ -136,8 +135,6 @@ func (b *ReplyButton) Add(text string) {
 
 // -- Reply keyboard markup
 
-
-
 // -- Inline keyboard markup
 
 // InlineKeyboard
@@ -173,6 +170,14 @@ func NewInlineKeyboard(columnsCount, stringCount int) *InlineKeyboard {
 	}
 }
 
+// NewAbortPipelineKeyboard
+func NewAbortPipelineKeyboard(title string) *tgbotapi.InlineKeyboardMarkup {
+	kb := NewInlineKeyboard(1, 1)
+	kb.Buttons.Add(title, "abort-pipeline")
+
+	return kb.Generate().InlineKeyboardMarkup()
+}
+
 // Generate inline keyboard
 func (k *InlineKeyboard) Generate() *KeyboardResult {
 
@@ -198,7 +203,7 @@ func (k *InlineKeyboard) Generate() *KeyboardResult {
 		if len(k.ControlButtons) > 0 {
 			keyboard = append(keyboard, k.ControlButtons)
 		}
-		return &KeyboardResult{inlineKeyboard:&tgbotapi.InlineKeyboardMarkup{InlineKeyboard: keyboard}}
+		return &KeyboardResult{inlineKeyboard: &tgbotapi.InlineKeyboardMarkup{InlineKeyboard: keyboard}}
 	}
 
 	// -- Create simple keyboard
@@ -239,7 +244,7 @@ func (k *InlineKeyboard) Generate() *KeyboardResult {
 
 	// -- Create page list
 
-	return &KeyboardResult{inlineKeyboard:&tgbotapi.InlineKeyboardMarkup{InlineKeyboard: keyboard}}
+	return &KeyboardResult{inlineKeyboard: &tgbotapi.InlineKeyboardMarkup{InlineKeyboard: keyboard}}
 
 }
 
@@ -268,7 +273,6 @@ func (k *InlineKeyboard) Save(message *tgbotapi.Message, ks *Keyboards) error {
 	return nil
 }
 
-
 // ++ default control func`s
 
 // Next() next page
@@ -282,8 +286,7 @@ func (k *InlineKeyboard) Next() tgbotapi.EditMessageReplyMarkupConfig {
 
 func next(c *Context) bool {
 
-
-	k := NewInlineKeyboard(0,0)
+	k := NewInlineKeyboard(0, 0)
 
 	c.Keyboards().ReadState(c.Update.CallbackQuery.Message, k)
 
@@ -303,9 +306,9 @@ func (k *InlineKeyboard) Prev() tgbotapi.EditMessageReplyMarkupConfig {
 	return k.Show()
 }
 
-func prev (c *Context) bool {
+func prev(c *Context) bool {
 
-	k := NewInlineKeyboard(0,0)
+	k := NewInlineKeyboard(0, 0)
 
 	c.Keyboards().ReadState(c.Update.CallbackQuery.Message, k)
 
@@ -341,7 +344,7 @@ func (k *InlineKeyboard) List() tgbotapi.EditMessageReplyMarkupConfig {
 
 func list(c *Context) bool {
 
-	k := NewInlineKeyboard(0,0)
+	k := NewInlineKeyboard(0, 0)
 
 	c.Keyboards().ReadState(c.Update.CallbackQuery.Message, k)
 
@@ -361,7 +364,7 @@ func (k *InlineKeyboard) Show() tgbotapi.EditMessageReplyMarkupConfig {
 
 func show(c *Context) bool {
 
-	k := NewInlineKeyboard(0,0)
+	k := NewInlineKeyboard(0, 0)
 
 	c.Keyboards().ReadState(c.Update.CallbackQuery.Message, k)
 	k.CurrentPage, _ = strconv.Atoi(c.RegexpResult[1])
@@ -386,7 +389,7 @@ func (k *InlineKeyboard) Back() tgbotapi.EditMessageTextConfig {
 
 func back(c *Context) bool {
 
-	k := NewInlineKeyboard(0,0)
+	k := NewInlineKeyboard(0, 0)
 
 	c.Keyboards().ReadState(c.Update.CallbackQuery.Message, k)
 
