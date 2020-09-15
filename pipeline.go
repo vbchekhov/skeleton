@@ -100,6 +100,9 @@ func (p *Pipeline) Repeat() {
 
 // Stop pipeline
 func (p *Pipeline) Stop() {
+	if p.rule.timer == nil {
+		return
+	}
 	p.data = []string{}
 	p.del()
 }

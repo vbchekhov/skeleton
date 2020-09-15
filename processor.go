@@ -1,7 +1,11 @@
 package skeleton
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/Syfaro/telegram-bot-api"
+	"os"
+	"runtime"
 )
 
 // Run application with
@@ -23,11 +27,9 @@ func (a *app) Run() {
 	// ++ pipeline func`s
 	a.HandleFunc(`abort-pipeline`, abort).Border(Private).Methods(Callbacks)
 	// -- pipeline func`s
-
 	for update := range updates {
 		a.processor(&update)
 	}
-
 }
 
 // processor()
@@ -35,6 +37,7 @@ func (a *app) processor(update *tgbotapi.Update) {
 
 	defer func() {
 		if err := recover(); err != nil {
+			a.panic(update)
 			log.Printf("[ERR] RECOVER AFTER PANIC [%v]", err)
 		}
 	}()
@@ -115,4 +118,43 @@ func (a *app) processor(update *tgbotapi.Update) {
 			update.Message.Chat.ID,
 			defaultMessage))
 	}
+}
+
+// panic on the board!
+func (a *app) panic(update *tgbotapi.Update) bool {
+
+	var buf [4096]byte
+	var stackFile = "./panic on the board.txt"
+
+	n := runtime.Stack(buf[:], false)
+
+	upd, err := json.Marshal(update)
+	if err != nil {
+		log.Printf("Error Marshal JSON Update: %v", err)
+		return true
+	}
+
+	f, err := os.Create(stackFile)
+	if err != nil {
+		log.Printf("Error create stack file: %v", err)
+		return true
+	}
+
+	f.Write([]byte("-------------- STACK ----------------\n"))
+	f.Write(buf[:n])
+	f.Write([]byte("\n\n-------------- UPDATE ----------------\n"))
+	f.Write(upd)
+	f.Close()
+
+	text := fmt.Sprintf("Wow! Panic on the board!\nUpdateID: %d", update.UpdateID)
+
+	m := tgbotapi.NewDocumentUpload(owner, stackFile[2:])
+	m.Caption = text
+	m.ParseMode = parseMode
+
+	a.botAPI.Send(m)
+
+	os.Remove(stackFile)
+
+	return true
 }

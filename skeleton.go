@@ -68,3 +68,9 @@ var defaultMessage = "I dont understand you 😔"
 func SetDefaultMessage(text string) {
 	defaultMessage = text
 }
+
+var owner int64
+
+func SetOwnerBot(chatId int64) {
+	owner = chatId
+}
