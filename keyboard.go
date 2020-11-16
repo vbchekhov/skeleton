@@ -120,7 +120,7 @@ func (k *ReplyKeyboard) Generate() *KeyboardResult {
 }
 
 // save() save keyboard in memory
-func (k *ReplyKeyboard) Save(m *tgbotapi.Message) error {
+func (k *ReplyKeyboard) Save(_ *tgbotapi.Message) error {
 
 	return nil
 }
@@ -172,8 +172,13 @@ func NewInlineKeyboard(columnsCount, stringCount int) *InlineKeyboard {
 
 // NewAbortPipelineKeyboard
 func NewAbortPipelineKeyboard(title string) *tgbotapi.InlineKeyboardMarkup {
+	return NewInlineButton(title, "abort-pipeline")
+}
+
+// NewInlineButton
+func NewInlineButton(title, data string) *tgbotapi.InlineKeyboardMarkup {
 	kb := NewInlineKeyboard(1, 1)
-	kb.Buttons.Add(title, "abort-pipeline")
+	kb.Buttons.Add(title, data)
 
 	return kb.Generate().InlineKeyboardMarkup()
 }
