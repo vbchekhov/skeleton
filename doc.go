@@ -1,16 +1,14 @@
 /*
 Skeleton ☠️
 
-
-Skeleton is a telegram bot framework based by github.com/Syfaro/telegram-bot-api
+Skeleton is a telegram bot framework based by github.com/go-telegram-bot-api/telegram-bot-api
 
 You can use all methods Syfaro library.
 
-
-Examples
-
+# Examples
 
 Simple app:
+
 	func main() {
 		// create app
 		app := skeleton.NewBot("TELERAM-TOKEN-BOT", )
@@ -34,6 +32,7 @@ Simple app:
 	}
 
 Pipeline app:
+
 	func main() {
 
 		// create app
@@ -82,6 +81,7 @@ Pipeline app:
 	}
 
 Keyboard app:
+
 	func main() {
 
 		// create app
@@ -136,7 +136,5 @@ Keyboard app:
 		// start app
 		app.Run()
 	}
-
-
 */
 package skeleton

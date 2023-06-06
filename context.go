@@ -1,6 +1,6 @@
 package skeleton
 
-import "github.com/Syfaro/telegram-bot-api"
+import "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 // Context command to execution
 type Context struct {
@@ -10,7 +10,7 @@ type Context struct {
 	chatId int64
 	// rule - current execution rule
 	rule *Rule
-	// BotAPI - bot api (github.com/Syfaro/telegram-bot-api)
+	// BotAPI - bot api (github.com/go-telegram-bot-api/telegram-bot-api )
 	BotAPI *tgbotapi.BotAPI
 	// Update - update from telegram bot api
 	Update *tgbotapi.Update

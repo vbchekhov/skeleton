@@ -1,7 +1,7 @@
 package skeleton
 
 import (
-	"github.com/Syfaro/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // borderUse Determine the boundaries
@@ -84,7 +84,7 @@ func IsCommand(u *tgbotapi.Update) bool {
 	if u.Message == nil {
 		return false
 	}
-	return  u.Message.IsCommand()
+	return u.Message.IsCommand()
 }
 
 // IsReplyToMessage

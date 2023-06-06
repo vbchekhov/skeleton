@@ -3,16 +3,17 @@ package skeleton
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Syfaro/telegram-bot-api"
 	"os"
 	"runtime"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Run application with
 // current params
 func (a *app) Run() {
 
-	updates, _ := a.botAPI.GetUpdatesChan(*a.updateConfig)
+	updates := a.botAPI.GetUpdatesChan(*a.updateConfig)
 
 	// add default func`s
 
@@ -105,7 +106,7 @@ func (a *app) processor(update *tgbotapi.Update) {
 	}
 
 	if context == Callbacks {
-		a.botAPI.AnswerCallbackQuery(tgbotapi.NewCallbackWithAlert(
+		a.botAPI.Send(tgbotapi.NewCallbackWithAlert(
 			update.CallbackQuery.ID,
 			defaultMessage))
 	}
@@ -148,7 +149,10 @@ func (a *app) panic(update *tgbotapi.Update) bool {
 
 	text := fmt.Sprintf("Wow! Panic on the board!\nUpdateID: %d", update.UpdateID)
 
-	m := tgbotapi.NewDocumentUpload(owner, stackFile[2:])
+	m := tgbotapi.NewDocument(owner, tgbotapi.FileReader{
+		Name: stackFile[2:],
+		Reader: f,
+	})
 	m.Caption = text
 	m.ParseMode = parseMode
 

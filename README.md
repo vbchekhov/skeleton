@@ -1,8 +1,8 @@
 # Skeleton ☠️
 
 
-Skeleton is a telegram bot framework based by github.com/Syfaro/telegram-bot-api
-You can use all methods github.com/Syfaro/telegram-bot-api library.
+Skeleton is a telegram bot framework based by github.com/go-telegram-bot-api/telegram-bot-api 
+You can use all methods github.com/go-telegram-bot-api/telegram-bot-api  library.
 
 # Examples
 
