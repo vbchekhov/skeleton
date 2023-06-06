@@ -1,4 +1,5 @@
-module skeleton
+module github.com/vbchekhov/skeleton                                                                                                                                                        
+
 
 go 1.20
 
